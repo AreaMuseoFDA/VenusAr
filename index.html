@@ -6,38 +6,42 @@
     <link rel="stylesheet" href="style.css" />
 
     <style>
-      body {
-        margin: 0;
-        overflow: hidden;
-      }
+  body {
+    margin: 0;
+    overflow: hidden;
+  }
 
-      .contenedor {
-        position: absolute;
-        bottom: 20px; /* se ubican abajo de la pantalla */
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        gap: 10px;
-        z-index: 9999; /* aseguramos que estén encima de la cámara */
-        flex-wrap: wrap;
-        justify-content: center;
-      }
+  .contenedor {
+    position: absolute;
+    bottom: 15px; /* más cerca del borde */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-wrap: wrap; /* permite que pasen a dos filas si no entran */
+    gap: 6px;
+    z-index: 9999;
+    justify-content: center;
+    width: 95%; /* ocupa casi todo el ancho de pantalla */
+  }
 
-      .botonEstado {
-        padding: 10px 15px;
-        font-size: 14px;
-        border: none;
-        border-radius: 8px;
-        background-color: rgba(0, 0, 0, 0.7);
-        color: white;
-        cursor: pointer;
-      }
+  .botonEstado {
+    padding: 6px 10px; /* más chicos */
+    font-size: 12px;   /* texto más pequeño */
+    border: none;
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    cursor: pointer;
+    flex: 1 1 auto;      /* se adaptan al ancho disponible */
+    max-width: 100px;    /* límite de ancho */
+    text-align: center;
+  }
 
-      .botonEstado:hover {
-        background-color: rgba(255, 255, 255, 0.8);
-        color: black;
-      }
-    </style>
+  .botonEstado:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: black;
+  }
+</style>
   </head>
 
   <body>
