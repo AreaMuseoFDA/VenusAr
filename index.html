@@ -1,25 +1,18 @@
-
 <!DOCTYPE html>
 <html>
-  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-  <!-- we import arjs version without NFT but with marker + location based support -->
-<script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.rawgit.com/AR-js-org/AR.js/3.3.2/aframe/build/aframe-ar-nft.js"></script>
-  <link rel="stylesheet" href="style.css" />
-  <body style="margin: 0px; overflow: hidden">
+  <head>
+    <meta charset="utf-8" />
+    <title>Venus AR</title>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <!-- AR.js para A-Frame -->
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body style="margin: 0; overflow: hidden">
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        const boton = document.getElementById("miBoton");
         const botonesEstado = document.querySelectorAll(".botonEstado");
-
-        const objetos = [
-          "Venus1",
-          "Venus2",
-          "Venus3",
-          "Venus4",
-          "Venus5",
-          "Venus6",
-        ];
         let estadoActual = 0;
 
         function cambiarVisibilidad() {
@@ -30,53 +23,34 @@
           const objeto5 = document.getElementById("BrazoIzqArms");
           const objeto6 = document.getElementById("BrazosLira");
 
-          switch (estadoActual) {
-            case 0:
-              objeto1.setAttribute("visible", true);
-              objeto2.setAttribute("visible", false);
-              objeto3.setAttribute("visible", false);
-              objeto4.setAttribute("visible", false);
-              objeto5.setAttribute("visible", false);
-              objeto6.setAttribute("visible", false);
-              break;
+          // Reset todo a invisible
+          [objeto1, objeto2, objeto3, objeto4, objeto5, objeto6].forEach((o) =>
+            o.setAttribute("visible", false)
+          );
 
-            case 1:
+          // Activo según estado
+          switch (estadoActual) {
+            case 0: // Original
+              objeto1.setAttribute("visible", true);
+              break;
+            case 1: // Reconstruida
               objeto1.setAttribute("visible", true);
               objeto2.setAttribute("visible", true);
               objeto3.setAttribute("visible", true);
-              objeto4.setAttribute("visible", false);
-              objeto5.setAttribute("visible", false);
-              objeto6.setAttribute("visible", false);
               break;
-
-            case 2:
+            case 2: // Discordia
               objeto1.setAttribute("visible", true);
               objeto2.setAttribute("visible", true);
-              objeto3.setAttribute("visible", false);
               objeto4.setAttribute("visible", true);
-              objeto5.setAttribute("visible", false);
-              objeto6.setAttribute("visible", false);
               break;
-
-            case 3:
+            case 3: // Amor y Guerra
               objeto1.setAttribute("visible", true);
               objeto2.setAttribute("visible", true);
-              objeto3.setAttribute("visible", false);
-              objeto4.setAttribute("visible", false);
               objeto5.setAttribute("visible", true);
-              objeto6.setAttribute("visible", false);
               break;
-
-            case 4:
+            case 4: // Música
               objeto1.setAttribute("visible", true);
-              objeto2.setAttribute("visible", false);
-              objeto3.setAttribute("visible", false);
-              objeto4.setAttribute("visible", false);
-              objeto5.setAttribute("visible", false);
               objeto6.setAttribute("visible", true);
-              break;
-
-            default:
               break;
           }
         }
@@ -87,8 +61,7 @@
         }
 
         botonesEstado.forEach((boton, indice) => {
-          boton.addEventListener("click", function () {
-            console.log(`Botón de Estado ${indice + 1} clicado`);
+          boton.addEventListener("click", () => {
             cambiarEstado(indice);
           });
         });
@@ -97,40 +70,32 @@
       });
     </script>
 
+    <!-- Escena AR -->
     <a-scene embedded arjs>
-      <a-entity
-        light="color: #BBB; type: ambient"
-        data-aframe-default-light=""
-        aframe-injected=""
-      ></a-entity>
-      <a-entity
-        light="intensity: 10; castShadow: true"
-        target-position="0 -0.10 0"
-        position="0 1.75 1.16"
-        data-aframe-default-light=""
-        aframe-injected=""
-      ></a-entity>
-      <a-marker type="pattern" url="assets/pattern-VenusQr.patt">
-        <!-- we use cors proxy to avoid cross-origin problems ATTENTION! you need to set up your server -->
+      <!-- luces -->
+      <a-entity light="type: ambient; color: #BBB"></a-entity>
+      <a-entity light="intensity: 1; castShadow: true" position="0 3 3"></a-entity>
 
-        <!-- Escala para tamaño real "6.5 6.5 6.5" en todos los objetos 3D, fue cambiado para la visualizacion en menor escala 
-          Escala recomendada para tamaño pequeño = 2 en todos los objetos 3D-->
+      <!-- marcador con tu .patt -->
+      <a-marker type="pattern" url="assets/pattern-VenusQr.patt">
+        <!-- Venus base -->
         <a-entity
           id="Venus"
           visible="true"
           position="0 0 0"
           rotation="-14.5 -82.9 89.27"
-          scale="0.5 0.5 0.6"
-         gltf-model="url(assets/Venus.glb)"
+          scale="2 2 2"
+          gltf-model="assets/Venus.glb"
         ></a-entity>
 
+        <!-- Variaciones -->
         <a-entity
           id="BrazoDer"
           visible="false"
           position="0 0 0"
           rotation="-14.5 -82.9 89.27"
-          scale="6 6 6"
-          gltf-model="https://cdn.glitch.global/95763434-9f2c-425f-9ca7-70e69fc0a7c4/BrazoDerecho.glb?v=1700881393826"
+          scale="2 2 2"
+          gltf-model="assets/BrazoDerecho.glb"
         ></a-entity>
 
         <a-entity
@@ -138,8 +103,8 @@
           visible="false"
           position="0 0 0"
           rotation="-14.5 -82.9 89.27"
-          scale="6 6 6"
-          gltf-model="https://cdn.glitch.global/95763434-9f2c-425f-9ca7-70e69fc0a7c4/BrazoIzq.glb?v=1700883978349"
+          scale="2 2 2"
+          gltf-model="assets/BrazoIzq.glb"
         ></a-entity>
 
         <a-entity
@@ -147,8 +112,8 @@
           visible="false"
           position="0 0 0"
           rotation="-14.5 -82.9 89.27"
-          scale="6 6 6"
-          gltf-model="https://cdn.glitch.global/95763434-9f2c-425f-9ca7-70e69fc0a7c4/BrazoIzq_Apple4.glb?v=1700942092609"
+          scale="2 2 2"
+          gltf-model="assets/BrazoIzq_Apple4.glb"
         ></a-entity>
 
         <a-entity
@@ -156,8 +121,8 @@
           visible="false"
           position="0 0 0"
           rotation="-14.5 -82.9 89.27"
-          scale="6 6 6"
-          gltf-model="https://cdn.glitch.me/95763434-9f2c-425f-9ca7-70e69fc0a7c4/BrazoIzq_Arms.glb?v=1700882028292"
+          scale="2 2 2"
+          gltf-model="assets/BrazoIzq_Arms.glb"
         ></a-entity>
 
         <a-entity
@@ -165,19 +130,22 @@
           visible="false"
           position="0 0 0"
           rotation="-14.5 -82.9 89.27"
-          scale="6 6 6"
-          gltf-model="https://cdn.glitch.global/95763434-9f2c-425f-9ca7-70e69fc0a7c4/Brazos_Lira.glb?v=1700884970513"
+          scale="2 2 2"
+          gltf-model="assets/Brazos_Lira.glb"
         ></a-entity>
       </a-marker>
 
-      <a-entity camera> </a-entity>
+      <!-- cámara -->
+      <a-entity camera></a-entity>
     </a-scene>
+
+    <!-- Botones -->
     <div class="contenedor">
-      <button id="btnEstado1" class="botonEstado">Original</button>
-      <button id="btnEstado2" class="botonEstado">Reconstruida</button>
-      <button id="btnEstado3" class="botonEstado">Discordia</button>
-      <button id="btnEstado4" class="botonEstado">Amor y Guerra</button>
-      <button id="btnEstado5" class="botonEstado">Musica</button>
+      <button class="botonEstado">Original</button>
+      <button class="botonEstado">Reconstruida</button>
+      <button class="botonEstado">Discordia</button>
+      <button class="botonEstado">Amor y Guerra</button>
+      <button class="botonEstado">Música</button>
     </div>
   </body>
 </html>
