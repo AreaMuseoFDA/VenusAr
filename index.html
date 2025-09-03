@@ -4,34 +4,47 @@
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <link rel="stylesheet" href="style.css" />
+
     <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+
       .contenedor {
-        position: fixed;
-        bottom: 10px;
+        position: absolute;
+        bottom: 35px;
         left: 50%;
         transform: translateX(-50%);
         display: flex;
         flex-wrap: wrap;
-        gap: 5px;
+        gap: 6px;
+        z-index: 9999;
         justify-content: center;
-        width: 100%;
-        z-index: 10;
+        width: 95%;
       }
+
       .botonEstado {
+        padding: 6px 10px;
         font-size: 12px;
-        padding: 5px 10px;
-        border-radius: 5px;
         border: none;
-        background-color: #333;
+        border-radius: 6px;
+        background-color: rgba(0, 0, 0, 0.7);
         color: white;
         cursor: pointer;
+        flex: 1 1 auto;
+        max-width: 100px;
+        text-align: center;
       }
+
       .botonEstado:hover {
-        background-color: #555;
+        background-color: rgba(255, 255, 255, 0.8);
+        color: black;
       }
     </style>
   </head>
-  <body style="margin: 0; overflow: hidden">
+
+  <body>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const botonesEstado = document.querySelectorAll(".botonEstado");
@@ -46,98 +59,135 @@
           const objeto5 = document.getElementById("BrazoIzqArms");
           const objeto6 = document.getElementById("BrazosLira");
 
-          switch (estadoActual) {
-            case 0: // Solo Venus
-              objeto1.setAttribute("visible", true);
-              objeto2.setAttribute("visible", false);
-              objeto3.setAttribute("visible", false);
-              objeto4.setAttribute("visible", false);
-              objeto5.setAttribute("visible", false);
-              objeto6.setAttribute("visible", false);
-              break;
+          objeto1.setAttribute("visible", false);
+          objeto2.setAttribute("visible", false);
+          objeto3.setAttribute("visible", false);
+          objeto4.setAttribute("visible", false);
+          objeto5.setAttribute("visible", false);
+          objeto6.setAttribute("visible", false);
 
-            case 1: // Reconstruida
+          switch (estadoActual) {
+            case 0:
+              objeto1.setAttribute("visible", true);
+              break;
+            case 1:
               objeto1.setAttribute("visible", true);
               objeto2.setAttribute("visible", true);
               objeto3.setAttribute("visible", true);
-              objeto4.setAttribute("visible", false);
-              objeto5.setAttribute("visible", false);
-              objeto6.setAttribute("visible", false);
               break;
-
-            case 2: // Discordia
+            case 2:
               objeto1.setAttribute("visible", true);
               objeto2.setAttribute("visible", true);
-              objeto3.setAttribute("visible", false);
               objeto4.setAttribute("visible", true);
-              objeto5.setAttribute("visible", false);
-              objeto6.setAttribute("visible", false);
               break;
-
-            case 3: // Amor y Guerra
+            case 3:
               objeto1.setAttribute("visible", true);
               objeto2.setAttribute("visible", true);
-              objeto3.setAttribute("visible", false);
-              objeto4.setAttribute("visible", false);
               objeto5.setAttribute("visible", true);
-              objeto6.setAttribute("visible", false);
               break;
-
-            case 4: // Música
+            case 4:
               objeto1.setAttribute("visible", true);
-              objeto2.setAttribute("visible", false);
-              objeto3.setAttribute("visible", false);
-              objeto4.setAttribute("visible", false);
-              objeto5.setAttribute("visible", false);
               objeto6.setAttribute("visible", true);
               break;
           }
         }
 
-        function cambiarEstado(nuevoEstado) {
-          estadoActual = nuevoEstado;
-          cambiarVisibilidad();
-        }
-
         botonesEstado.forEach((boton, indice) => {
           boton.addEventListener("click", function () {
-            cambiarEstado(indice);
+            estadoActual = indice;
+            cambiarVisibilidad();
           });
         });
 
         cambiarVisibilidad();
+
+        // --- NUEVO: soporte para dos marcadores usando el mismo contentRoot ---
+        // contentRoot está inicialmente dentro del marker1 (ver más abajo en el HTML).
+        // Cuando se detecte marker2 lo movemos como hijo de marker2, y viceversa.
+        const marker1 = document.getElementById("marker1");
+        const marker2 = document.getElementById("marker2");
+        const contentRoot = document.getElementById("contentRoot");
+
+        // Habilitamos que los markers emitan eventos (si hace falta)
+        if (marker1) marker1.setAttribute("emitevents", "true");
+        if (marker2) marker2.setAttribute("emitevents", "true");
+
+        function moverContenidoA(markerEl) {
+          if (!markerEl || !contentRoot) return;
+          // Solo mover si no está ya bajo ese marker
+          if (contentRoot.parentElement !== markerEl) {
+            markerEl.appendChild(contentRoot);
+          }
+        }
+
+        // Listeners: cuando se detectan, movemos el contentRoot
+        if (marker1) marker1.addEventListener("markerFound", () => moverContenidoA(marker1));
+        if (marker2) marker2.addEventListener("markerFound", () => moverContenidoA(marker2));
+        // (opcional) si querés moverlo de vuelta a marker1 cuando se pierde marker2:
+        // marker2.addEventListener("markerLost", () => moverContenidoA(marker1));
       });
     </script>
 
     <a-scene embedded arjs>
-      <!-- Luces -->
-      <a-entity light="color: #fff; type: ambient; intensity: 1"></a-entity>
-      <a-entity light="type: directional; intensity: 1" position="1 1 0"></a-entity>
+      <!-- Marcador 1 (principal) CON contentRoot dentro -->
+      <a-marker id="marker1" type="pattern" url="assets/pattern-VenusQr.patt" emitevents="true">
+        <a-entity
+          id="contentRoot"
+          position="0 0 0"
+          rotation="-14.5 -82.9 89.27"
+          scale="2 2 2"
+        >
+          <!-- Tus entidades EXACTAMENTE igual que antes -->
+          <a-entity
+            id="Venus"
+            visible="true"
+            position="0 0 0"
+            gltf-model="assets/Venus.glb"
+          ></a-entity>
 
-      <!-- Contenedor de modelos -->
-      <a-entity id="venus-container" position="0 0 0" rotation="-14.5 -82.9 89.27" scale="6 6 6">
-        <a-entity id="Venus" visible="true" gltf-model="assets/Venus.glb"></a-entity>
-        <a-entity id="BrazoDer" visible="false" gltf-model="assets/BrazoDerecho.glb"></a-entity>
-        <a-entity id="BrazoIzq" visible="false" gltf-model="assets/BrazoIzq.glb"></a-entity>
-        <a-entity id="BrazoIzqApple" visible="false" gltf-model="assets/BrazoIzq_Apple4.glb"></a-entity>
-        <a-entity id="BrazoIzqArms" visible="false" gltf-model="assets/BrazoIzq_Arms.glb"></a-entity>
-        <a-entity id="BrazosLira" visible="false" gltf-model="assets/Brazos_Lira.glb"></a-entity>
-      </a-entity>
+          <a-entity
+            id="BrazoDer"
+            visible="false"
+            position="0 0 0"
+            gltf-model="assets/BrazoDerecho.glb"
+          ></a-entity>
 
-      <!-- Marcador 1 -->
-      <a-marker type="pattern" url="assets/pattern-VenusQr.patt">
-        <a-entity position="0 0 0" rotation="0 0 0" scale="1 1 1" gltf-model="#venus-container"></a-entity>
+          <a-entity
+            id="BrazoIzq"
+            visible="false"
+            position="0 0 0"
+            gltf-model="assets/BrazoIzq.glb"
+          ></a-entity>
+
+          <a-entity
+            id="BrazoIzqApple"
+            visible="false"
+            position="0 0 0"
+            gltf-model="assets/BrazoIzq_Apple4.glb"
+          ></a-entity>
+
+          <a-entity
+            id="BrazoIzqArms"
+            visible="false"
+            position="0 0 0"
+            gltf-model="assets/BrazoIzq_wArms.glb"
+          ></a-entity>
+
+          <a-entity
+            id="BrazosLira"
+            visible="false"
+            position="0 0 0"
+            gltf-model="assets/Brazos_Lira.glb"
+          ></a-entity>
+        </a-entity>
       </a-marker>
 
-      <!-- Marcador 2 (backup) -->
-      <a-marker type="pattern" url="assets/pattern-BackupQr.patt">
-        <a-entity position="0 0 0" rotation="0 0 0" scale="1 1 1" gltf-model="#venus-container"></a-entity>
-      </a-marker>
+      <!-- Marcador 2 (backup) VACÍO: cuando se detecte, movemos contentRoot aquí -->
+      <a-marker id="marker2" type="pattern" url="assets/pattern-BackupQr.patt" emitevents="true"></a-marker>
 
       <a-entity camera></a-entity>
     </a-scene>
 
-    <!-- Botones -->
     <div class="contenedor">
       <button class="botonEstado">Original</button>
       <button class="botonEstado">Reconstruida</button>
