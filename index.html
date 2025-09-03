@@ -13,27 +13,27 @@
 
   .contenedor {
     position: absolute;
-    bottom: 35px; /* más cerca del borde */
+    bottom: 35px; 
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    flex-wrap: wrap; /* permite que pasen a dos filas si no entran */
+    flex-wrap: wrap; 
     gap: 6px;
     z-index: 9999;
     justify-content: center;
-    width: 95%; /* ocupa casi todo el ancho de pantalla */
+    width: 95%; 
   }
 
   .botonEstado {
-    padding: 6px 10px; /* más chicos */
-    font-size: 12px;   /* texto más pequeño */
+    padding: 6px 10px; 
+    font-size: 12px;   
     border: none;
     border-radius: 6px;
     background-color: rgba(0, 0, 0, 0.7);
     color: white;
     cursor: pointer;
-    flex: 1 1 auto;      /* se adaptan al ancho disponible */
-    max-width: 100px;    /* límite de ancho */
+    flex: 1 1 auto;      
+    max-width: 100px;    
     text-align: center;
   }
 
@@ -147,7 +147,7 @@
           position="0 0 0"
           rotation="-14.5 -82.9 89.27"
           scale="6 6 6"
-          gltf-model="assets/BrazoIzq_Arms.glb"
+          gltf-model="assets/BrazoIzq_wArms.glb"
         ></a-entity>
 
         <a-entity
@@ -163,7 +163,7 @@
       <a-entity camera></a-entity>
     </a-scene>
 
-    <!-- Botones encima de la cámara -->
+    
     <div class="contenedor">
       <button class="botonEstado">Original</button>
       <button class="botonEstado">Reconstruida</button>
