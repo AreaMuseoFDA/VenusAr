@@ -102,11 +102,14 @@
 
     <a-scene embedded arjs>
 
-            <a-entity light="type: ambient; color: #ffffff; intensity: 1.5"></a-entity>
+      <a-entity light="type: ambient; color: #ffffff; intensity: 1.5"></a-entity>
+
+      <a-entity light="type: directional; color: #ffffff; intensity: 2"
+            position="0 2 2"></a-entity>
      
       <!-- Marcador 1 -->
       <a-marker type="pattern" url="assets/pattern-VenusQr.patt">
-        <a-entity position="0 0 0" rotation="-14.5 -82.9 89.27" scale="6 6 6">
+        <a-entity position="0 0 0" rotation="-14.5 -82.9 89.27" scale="2 2 2">
           <a-entity id="Venus" visible="true" gltf-model="assets/Venus.glb"></a-entity>
           <a-entity id="BrazoDer" visible="false" gltf-model="assets/BrazoDerecho.glb"></a-entity>
           <a-entity id="BrazoIzq" visible="false" gltf-model="assets/BrazoIzq.glb"></a-entity>
